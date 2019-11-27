@@ -6,6 +6,7 @@ from sklearn.tree import DecisionTreeClassifier
 from sklearn import metrics
 
 def classify(file):
+
     classifyers = [Classifyers.consinants,Classifyers.containsDE]
     data=[[]]
     for line in file:
