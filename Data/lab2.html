@@ -1,0 +1,113 @@
+<html><head>
+<meta http-equiv="content-type" content="text/html; charset=windows-1252"><title>Intro to IS Lab 2</title>
+</head><body><center><h2>Intro to IS Lab 2: Wikipedia Language Classification</h2>
+<h4>Due: Friday 26 Apr 2019, 11:59 PM</h4>
+<!-- <h4>Due: 12 Oct 2018, 11:59 PM</h4> -->
+</center>
+
+For this assignment, we will be investigating the use of decision
+trees and boosted decision stumps to classify text as one of two
+languages.  Specifically, your task is to collect data and train (in
+several different ways) some decision stumps/trees so that when given
+a 15 word segment of text from either
+the <a href="http://en.wikipedia.org/">English</a>
+<!-- <a href="http://it.wikipedia.org">Italian</a>-->
+or <a href="http://nl.wikipedia.org/">Dutch</a> Wikipedia, your code
+will state to the best of its ability which language the text is in.
+
+<h4>Data collection</h4>
+<p>The first step will be to collect some data.  Note that just as the
+English Wiki has a "Random article" link, Dutch has a "Willekeurige
+pagina" operation which you will probably avail yourself of.  Also,
+you should take the information about how your model will be tested
+into account when collecting your training set - that is, each example
+should itself be a 15-word sample, so you can get many samples from a
+single page, but you should also obtain a number of different pages,
+since they will represent different authors writing in the same
+language. If you'd like, you may share any raw data you collect with other students. <b>NOT FEATURES and NOT CODE! Raw text only!</b>
+</p>
+
+<p>
+Then, you will have to decide on some features to use for learning.
+That is, you cannot feed in 15 words of text as an input, but rather
+features of the 15 words.  Since we have decision trees, they should
+be boolean (or few-valued) features, but can be boolean questions
+about numeric features as well.  So, some features you could use
+(these may or may not be valuable) could be "Does it contain the
+letter Q?" or "Is the average word length &gt; 5?"  You will need to
+come up with at least <b>ten distinct features</b>.  Note that you can't use
+the same numeric feature as ten different attributes and have that
+count, though you are certainly welcome to create several binary
+attributes out of one numeric feature.  Of course, you will need to
+create the same features for your training data, your test data, and
+the novel test examples that I will provide when grading (see "What to
+hand in" below).
+</p>
+
+<h4>Experimentation</h4> 
+<p> You will implement two learning algorithms: a decision tree and Adaboost using decision trees as the learning algorithm.</p>
+<p>You will need to write code that creates a decision tree for your
+data, <b>based on the information gain algorithm covered in the book and class</b>.  You will also be implementing Adaboost using decision stumps. Remember that Adaboost relies on your learning algorithm to accept weighted examples. Keep this in mind when designing your decision tree algorithm.</p>
+
+In order to evaluate your algorithms, you should set aside a test set on which to test your algorithms performance. Using this you can determine the error rate of your algorithms given certain features, training sizes, and learning parameters (e.g. different depths and/or entropy cutoffs of the single
+  decision tree, and different numbers of stumps when boosting).
+  <b>This process should be fully explained in your writeup</b>.
+</p>
+
+<p> For testing purposes your implementations should train on files with the format demonstrated here in <a href="train.dat">train.dat</a>. Each line is a training example consisting of a label (either "en" for English or "nl" for Dutch the format) followed by a '|' followed by 15 words. Notice that the training data could be in any order and begin in the middle of sentences and contain numbers and punctuation (other than '|'). Whether you use punctuation or just strip it all out is up to you. After learning a model you will then have to somehow save it to be loaded later by a classifier. The easiest way to do this is via serialization (<a href="https://www.tutorialspoint.com/java/java_serialization.htm">Java</a> or <a href="https://docs.python.org/3/library/pickle.html">Python</a>) but it is ok if you come up with some other scheme. The only requirement is that whatever you training program outputs your prediction program can load and use.
+
+Testing data will follow a similar format as above but with out the labels, as in <a href="test.dat">test.dat</a>. Each line is an observation without a label (nor the special delimiter '|') that your program is expected to classify.
+</p>
+
+<h4>What to hand in</h4>
+You should hand in the following:
+<ul>
+  <li>Some code!  This can be written in Java, C++, Python, or another
+    language if given prior approval.  It should have at least two
+    entry points (different modules or command-line args):
+    <ul>
+      <li><b><code>train &lt;examples&gt; &lt;hypothesisOut&gt; &lt;learning-type&gt; </code></b> should read in labeled examples and
+        perform some sort of training.  
+		<ul><li><code>examples</code> is a file containing labeled examples. <a href="train.dat">For example.</a>	</li>
+			<li><code>hypothesisOut</code> specifies the file name to write your model to. </li>
+			<li><code>learning-type</code> specifies the type of learning algorithm you will run, it is either "dt" or "ada".  You should use (well-documented) constants in the code to control additional learning parameters like max tree depth, number of stumps, etc. </li>
+		</ul>
+      <li><b><code>predict &lt;hypothesis&gt; &lt;file&gt; </code></b> Your program should classify each line as either English or Dutch using the specified model. Note that this must <b>not</b> do any training, but
+        should take a model and make a prediction
+        about the input. For each input example, your program should simply print its predicted label on a newline. <a href="answer.out">For example.</a> It should not print anything else.<ul>
+			<li> <code>hypothesis</code> is a trained decision tree or ensemble created by your <code>train</code> program</li> 
+			<li> <code>file</code> is a file containing lines of 15 word sentence fragments in either English or Dutch. <a href="test.dat">For example.</a></li>  
+    </li></ul>
+  </li>
+  <li>Your best tree or ensemble in some hard-coded form, to enable the
+    prediction. This is the <code>hypothesis</code> we will test using your <code>predict</code> function </li>
+  <li>Your examples, so we can test your training process.</li>
+  <li>Documentation about how to use your code</li>
+  <li>A writeup, containing:
+    <ul>
+      <li>a description of your features and how you chose them</li>
+      <li>a description of the decision tree learning, how you
+        came up with the best parameters and your own testing results</li>
+      <li>a description of the boosting, how many trees turned out
+        to be useful, and your own testing </li>
+      <li>anything else you think we might like to know</li>
+    </ul>
+    </li>
+</ul>
+
+<h4>Grading</h4>
+<ul>
+  <li>Decision tree implementation: 25%</li>
+  <li>Adaboost implementation: 25%</li>
+  <li>Example collection, feature selection, and evaluation/testing: 15%</li>
+  <li>Training processes: 10%</li>
+  <li>Correct predictions: 10%</li>
+  <li>Writeup: 15%</li>
+</ul>
+
+For the correct predictions, I will present ten examples of each
+language.  Generally your grade will be proportional to the number
+of correct predictions, however if your model just always predicts
+the same language will get less than half the credit.
+
+</body></html>
